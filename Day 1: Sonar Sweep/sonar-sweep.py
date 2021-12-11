@@ -1,6 +1,6 @@
 import os
 
-data = open(os.getcwd() + "/Day 1: Sonar Sweep/input.txt").read().splitlines()
+data = open("./input.txt").read().splitlines()
 data = list(map(int, data))
 
 
@@ -30,5 +30,5 @@ def sliding_window(input_data, window_size=3):
     return sonar_sweep(sums)
 
 
-# print(sonar_sweep(data))
+print(sonar_sweep(data))
 print(sliding_window(data))
