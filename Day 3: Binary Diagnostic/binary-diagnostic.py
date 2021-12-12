@@ -3,13 +3,17 @@ column_stack = []
 gamma = []
 epsilon = []
 
-# Format data into columns
-for i in range(12):
-    features, classes = zip(*[(s[:i], [s[i]]) for s in data])
-    column_stack.append("".join(j for i in classes for j in i))
 
-# Now we can calculate delta and gamma values for the solution!
+def column_split(input_list=data):
+    # Format data into columns
+    for i in range(len(input_list[0])):
+        _, classes = zip(*[(s[:i], [s[i]]) for s in data])
+        column_stack.append("".join(j for i in classes for j in i))
+
+
 def pt1(data=data):
+    column_split()
+    # Now we can calculate delta and gamma values for the solution!
     for i in column_stack:
         num0s = i.count("0")
         num1s = i.count("1")
@@ -22,6 +26,8 @@ def pt1(data=data):
             gamma.append("1")
             epsilon.append("0")
 
+
+pt1()
 
 gamma_dec = int("".join(gamma), 2)
 epsilon_dec = int("".join(epsilon), 2)
