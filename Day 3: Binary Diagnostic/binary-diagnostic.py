@@ -1,3 +1,6 @@
+from math import gamma
+
+
 data = open("./input.txt").read().splitlines()
 
 
@@ -5,6 +8,28 @@ def get_column(column, data=data):
     "Return a generator that returns all numbers in column 'column'"
     for i, _ in enumerate(data):
         yield data[i][column]
+
+
+def pt1(data=data):
+    gamma = []
+    epsilon = []
+    for colnum in range(12):
+        for i in list(get_column(colnum)):
+            num0s = i.count("0")
+            num1s = i.count("1")
+        if num0s > num1s:
+            "0 is more common, so gamma bit is 0 and epsilon bit is 1"
+            gamma.append("0")
+            epsilon.append("1")
+        else:
+            "1 is more common, so gamma bit is 1 and epsilon bit is 0"
+            gamma.append("1")
+            epsilon.append("0")
+    return gamma, epsilon
+
+
+gamma, epsilon = pt1()
+print(int("".join(epsilon), 2) * int("".join(gamma), 2))
 
 
 def part2_oxygen(data=data, column=0):
@@ -51,6 +76,4 @@ def part2_co2(data=data, column=0):
         return part2_oxygen(data=co2, column=column + 1)
 
 
-oxydec = int(part2_oxygen()[0], 2)
-co2dec = int(part2_co2()[0], 2)
-print(oxydec * co2dec)
+print(int(part2_co2()[0], 2) * int(part2_oxygen()[0], 2))
