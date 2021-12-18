@@ -1,37 +1,56 @@
 data = open("./input.txt").read().splitlines()
-column_stack = []
-gamma = []
-epsilon = []
 
 
-def column_split(input_list=data):
-    # Format data into columns
-    for i in range(len(input_list[0])):
-        _, classes = zip(*[(s[:i], [s[i]]) for s in data])
-        column_stack.append("".join(j for i in classes for j in i))
+def get_column(column, data=data):
+    "Return a generator that returns all numbers in column 'column'"
+    for i, _ in enumerate(data):
+        yield data[i][column]
 
 
-def pt1(data=data):
-    column_split()
-    # Now we can calculate delta and gamma values for the solution!
-    for i in column_stack:
-        num0s = i.count("0")
-        num1s = i.count("1")
-        if num0s > num1s:
-            "0 is more common, so gamma bit is 0 and epsilon bit is 1"
-            gamma.append("0")
-            epsilon.append("1")
-        else:
-            "1 is more common, so gamma bit is 1 and epsilon bit is 0"
-            gamma.append("1")
-            epsilon.append("0")
+def part2_oxygen(data=data, column=0):
+    if len(data) == 1:
+        return data
+    num0s = 0
+    num1s = 0
+    for cs in list(get_column(column)):
+        num0s += cs.count("0")
+        num1s += cs.count("1")
+    if num0s > num1s:
+        "0 is more common, keep everything with a 0 in 'column' column"
+        oxygen = [j for i, j in enumerate(data) if data[i][column] == "0"]
+        return part2_oxygen(data=oxygen, column=column + 1)
+    if num0s < num1s:
+        "1 is more common, keep everything with a 1 in 'column' column"
+        oxygen = [j for i, j in enumerate(data) if data[i][column] == "1"]
+        return part2_oxygen(data=oxygen, column=column + 1)
+    else:
+        "Equal frequency, for oxygen, keep everything with a 1 in 'column' column"
+        oxygen = [j for i, j in enumerate(data) if data[i][column] == "1"]
+        return part2_oxygen(data=oxygen, column=column + 1)
 
 
-pt1()
+def part2_co2(data=data, column=0):
+    if len(data) == 1:
+        return data
+    num0s = 0
+    num1s = 0
+    for cs in list(get_column(column)):
+        num0s += cs.count("0")
+        num1s += cs.count("1")
+    if num0s < num1s:
+        "0 is less common, keep everything with a 0 in 'column' column"
+        co2 = [j for i, j in enumerate(data) if data[i][column] == "0"]
+        return part2_oxygen(data=co2, column=column + 1)
+    if num0s > num1s:
+        "1 is less common, keep everything with a 1 in 'column' column"
+        co2 = [j for i, j in enumerate(data) if data[i][column] == "1"]
+        return part2_oxygen(data=co2, column=column + 1)
+    else:
+        "Equal frequency, for co2, keep everything with a 0 in 'column' column"
+        co2 = [j for i, j in enumerate(data) if data[i][column] == "0"]
+        return part2_oxygen(data=co2, column=column + 1)
 
-gamma_dec = int("".join(gamma), 2)
-epsilon_dec = int("".join(epsilon), 2)
 
-print(f"Gamma (decimal): {gamma_dec} ({''.join(gamma)})")
-print(f"Epsilon (decimal): {epsilon_dec} ({''.join(epsilon)})")
-print(f"Pt. 1 Answer: {gamma_dec * epsilon_dec}")
+oxydec = int(part2_oxygen()[0], 2)
+co2dec = int(part2_co2()[0], 2)
+print(oxydec * co2dec)
